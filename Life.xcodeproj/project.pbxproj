@@ -117,6 +117,7 @@
 			children = (
 				416EFE452B6186BA00CC5B67 /* Promo */,
 				416EFE412B617DFE00CC5B67 /* TabBar.storyboard */,
+				416EFE4C2B6288C600CC5B67 /* APIManager.swift */,
 				416EFE432B61861D00CC5B67 /* TabBarController.swift */,
 			);
 			path = TabBar;
@@ -128,7 +129,6 @@
 				41181E632B62DAE600827729 /* Goods */,
 				416EFE462B61871F00CC5B67 /* PromoViewController.swift */,
 				416EFE4A2B618DC400CC5B67 /* PromoTableViewCell.swift */,
-				416EFE4C2B6288C600CC5B67 /* APIManager.swift */,
 				416EFE4E2B628C2200CC5B67 /* PromoData.swift */,
 			);
 			path = Promo;

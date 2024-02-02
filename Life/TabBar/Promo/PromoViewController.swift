@@ -12,8 +12,9 @@ class PromoViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupTableView()
-        APIManager.shared.getPromo{ [weak self] values in
+        APIManager.shared.getPromoAsync{ [weak self] values in
             DispatchQueue.main.async {
                 guard let self else { return }
                 self.promoData = values
@@ -27,6 +28,8 @@ class PromoViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        tableView.contentOffset = CGPoint(x: 0, y: -tableView.adjustedContentInset.top)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -37,6 +40,10 @@ class PromoViewController: UIViewController, UITableViewDelegate, UITableViewDat
         guard let cellTable = tableView.dequeueReusableCell(withIdentifier: "cellPromo", for: indexPath) as? PromoTableViewCell else {
             return UITableViewCell()
         }
+        
+        cellTable.contentView.layer.masksToBounds = true
+        cellTable.contentView.layer.cornerRadius = 15
+        
         cellTable.promoName.text = promoData[indexPath.row].title
         if let imageURL = URL(string: "https://sklad-zdorovo.ru" + promoData[indexPath.row].image) {
             DispatchQueue.global().async {
@@ -52,7 +59,7 @@ class PromoViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPromo = promoData[indexPath.row]
-
+        
         // Используйте идентификатор вашего контроллера из Storyboard
         if let detailViewController = storyboard?.instantiateViewController(withIdentifier: "GoodsViewController") as? GoodsViewController {
             detailViewController.promo = selectedPromo

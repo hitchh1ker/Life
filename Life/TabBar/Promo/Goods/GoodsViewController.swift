@@ -17,9 +17,8 @@ class GoodsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         setupTableView()
         if let promoId = promo?.id {
-            APIManager.shared.getGoodsPromo(promoId: promoId, limit: 10, offset: 0) { [weak self] values in
+            APIManager.shared.getGoodsPromoAsync(promoId: promoId, limit: 10, offset: 0) { values in
                 DispatchQueue.main.async {
-                    guard let self = self else { return }
                     self.goodsData = values
                     self.tableView.reloadData()
                 }
@@ -53,14 +52,13 @@ class GoodsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
         if let imageURL = URL(string: "https://sklad-zdorovo.ru" + goodsData[indexPath.row].images[0]) {
-            DispatchQueue.global().async {
-                if let imageData = try? Data(contentsOf: imageURL),
-                   let image = UIImage(data: imageData) {
+            URLSession.shared.dataTask(with: imageURL) { data, response, error in
+                if let image = UIImage(data: data!) {
                     DispatchQueue.main.async {
                         cellTable.goodsImage.image = image
                     }
                 }
-            }
+            }.resume()
         }
         cellTable.goodsName.text = goodsData[indexPath.row].name
         cellTable.goodsProducer.text = goodsData[indexPath.row].producer
@@ -72,9 +70,9 @@ class GoodsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if goodsData[indexPath.row].inStock == false {
             cellTable.goodsInStock.text = "В аптеке"
         }
-        cellTable.goodsBuyBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
+        cellTable.goodsBuyBtn.titleLabel?.font = UIFont.systemFont(ofSize: 10.0)
         cellTable.goodsBuyBtn.setTitle("От \(goodsData[indexPath.row].startPrice) \u{20BD}", for: .normal)
-        
+
         return cellTable
     }
 }
